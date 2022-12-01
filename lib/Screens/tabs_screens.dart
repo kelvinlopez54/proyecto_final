@@ -17,15 +17,51 @@ class TabsScreen extends StatelessWidget {
   const TabsScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    CharacterService characters = CharacterService();
-    SpellsService spells = SpellsService();
+    CharacterService characters = CharacterService(); //Clase que descarga los datos del JSON de los personajes
+    SpellsService spells = SpellsService(); //Clase que descarga los datos del JSON de los hechizos
+
+    ScrollController listScrollController = ScrollController(); //Controlar el scroll del tab de personajes.
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          
+          children: [
+        FloatingActionButton(
+        onPressed: () {
+            if (listScrollController.hasClients) {
+              final position = listScrollController.position.minScrollExtent;
+              listScrollController.animateTo(
+                position,
+                duration: Duration(seconds: 3),
+                curve: Curves.easeOut,
+              );
+            }
+        },
+        isExtended: true,
+        tooltip: "Scroll to top",
+        child: Icon(Icons.arrow_upward),
+        ),
+        FloatingActionButton(
+        onPressed: () {
+            if (listScrollController.hasClients) {
+              final position = listScrollController.position.maxScrollExtent;
+              listScrollController.animateTo(
+                position,
+                duration: Duration(seconds: 3),
+                curve: Curves.easeOut,
+              );
+            }
+        },
+        isExtended: true,
+        tooltip: "Scroll to bottom",
+        child: Icon(Icons.arrow_downward),
+        ),]),
         body: SafeArea(
           child: Column(
             children: [
-
               const TabBar(labelColor: Colors.black, tabs: [
                 Tab(
                   text: 'Personajasos',
@@ -39,7 +75,7 @@ class TabsScreen extends StatelessWidget {
                 child: TabBarView(
                   // Here is Line 132.
                   children: [
-                    SingleChildScrollView(scrollDirection: Axis.vertical,child: Container(
+                    SingleChildScrollView(controller: listScrollController,scrollDirection: Axis.vertical,child: Container(
                         child: FutureBuilder<List<CharacterInfo>>(
                           future: characters.fetchCharacters(), 
                           builder: (context, snapshot) {
