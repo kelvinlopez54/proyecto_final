@@ -27,7 +27,7 @@ class TabsScreen extends StatelessWidget {
       child: Scaffold(
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
-          
+
           children: [
         FloatingActionButton(
         onPressed: () {
@@ -44,6 +44,7 @@ class TabsScreen extends StatelessWidget {
         tooltip: "Scroll to top",
         child: Icon(Icons.arrow_upward),
         ),
+        SizedBox(height: 10),
         FloatingActionButton(
         onPressed: () {
             if (listScrollController.hasClients) {
