@@ -145,7 +145,3 @@ class TabsScreen extends StatelessWidget {
     
   }
 }
-
-class Character{
-  
-}
