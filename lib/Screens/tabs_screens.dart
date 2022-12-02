@@ -11,23 +11,23 @@ class TabsScreen extends StatelessWidget {
   const TabsScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    CharacterServiceBloc characters = CharacterServiceBloc(); //Clase que descarga los datos del JSON de los personajes
-    SpellsServiceBloc spells = SpellsServiceBloc(); //Clase que descarga los datos del JSON de los hechizos
+    CharacterServiceBloc characters = CharacterServiceBloc(); //Clase que descarga los datos del JSON de los personajes y te retorna una lista con los datos de cada personaje
+    SpellsServiceBloc spells = SpellsServiceBloc(); //Clase que descarga los datos del JSON de los hechizos y te retorna una lista con el nombre y la descripción del hechizo.
 
     ScrollController CharacterScrollController = ScrollController(); //Controlar el scroll del tab de personajes.
-    ScrollController SpellsScrollController = ScrollController();
+    ScrollController SpellsScrollController = ScrollController(); //Controlar el scroll del tab de los hechizos.
 
     return DefaultTabController(
-      length: 2,
+      length: 2, //Numero de tabs (Si te pasas dara error)...
       child: Scaffold(
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+        floatingActionButton: Column( //Se orden los floatingButtons verticalmente y agregar mas de un Floating...
+          mainAxisAlignment: MainAxisAlignment.end, //Hacer hacia abajo los floatingButtons...
 
           children: [
         FloatingActionButton(
         onPressed: () {
-            if (CharacterScrollController.hasClients && tabPosition == 0) {
-              final position = CharacterScrollController.position.minScrollExtent;
+            if (CharacterScrollController.hasClients && tabPosition == 0) { // Este if te sirve para saber en que tab te encuentras y desplazarlo...
+              final position = CharacterScrollController.position.minScrollExtent; //Encuentra la posicion incial...           
               CharacterScrollController.animateTo(
                 position,
                 duration: Duration(seconds: 3),
@@ -44,10 +44,10 @@ class TabsScreen extends StatelessWidget {
             }
         },
         isExtended: true,
-        tooltip: "Scroll to top",
-        child: Icon(Icons.arrow_upward),
+        tooltip: "Scroll to top", //Mensajito cuando dejas presionado...
+        child: Icon(Icons.arrow_upward), // Flechita hacia arriba...
         ),
-        SizedBox(height: 10),
+        SizedBox(height: 10), // Separacion entre botones...
         FloatingActionButton(
         onPressed: () {
             if (CharacterScrollController.hasClients && tabPosition == 0) {
@@ -71,10 +71,10 @@ class TabsScreen extends StatelessWidget {
         tooltip: "Scroll to bottom",
         child: Icon(Icons.arrow_downward),
         ),]),
-        body: SafeArea(
+        body: SafeArea( // Omitir area ocupada por el hardware (Bocina de llamada, o camara o sensores)...
           child: Column(
             children: [
-              TabBar(onTap: (int) {
+              TabBar(onTap: (int) { // Saber en que posicion se encuentra el usuario...
                 tabPosition = int;
               },labelColor: Colors.black, tabs: [
                 Tab(
@@ -87,13 +87,15 @@ class TabsScreen extends StatelessWidget {
 
               Expanded(
                 child: TabBarView(
-                  // Here is Line 132.
                   children: [
-                    SingleChildScrollView(controller: CharacterScrollController,scrollDirection: Axis.vertical,child: Container(
+                    SingleChildScrollView(
+                    controller: CharacterScrollController,
+                    scrollDirection: Axis.vertical,
+                    child: Container(
                         child: FutureBuilder<List<CharacterInfo>>(
-                          future: characters.fetchCharacters(), 
-                          builder: (context, snapshot) {
-                          if(snapshot.hasData){
+                          future: characters.fetchCharacters(), // Obtener la lista de los datos de los personajes con el bloc...
+                          builder: (context, snapshot) { // Construye la informacion siempre y cuando se anda concretado el future...
+                          if(snapshot.hasData){ // Si se concreta el Future entonces que organice la informacion...
                             return Column(
                               children: snapshot.data!.map((item) => Container(
                               margin: const EdgeInsets.only(left: 8, right: 8, top: 2, bottom: 2), 
@@ -111,9 +113,8 @@ class TabsScreen extends StatelessWidget {
                             ),)).toList());
                           } else return CircularProgressIndicator();
                         },)),),
-                    
-                    
-                    SingleChildScrollView(controller: SpellsScrollController,scrollDirection: Axis.vertical,child: Container(
+
+                        SingleChildScrollView(controller: SpellsScrollController,scrollDirection: Axis.vertical,child: Container(
                         child: FutureBuilder<List<SpellsInfo>>(
                           future: spells.fetchCharacters(), 
                           builder: (context, snapshot) {
@@ -139,9 +140,5 @@ class TabsScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void inicCharacters() {
-    
   }
 }
