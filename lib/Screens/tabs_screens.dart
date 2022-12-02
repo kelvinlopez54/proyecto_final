@@ -6,21 +6,21 @@ import 'dart:io';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:proyecto_final/DataClasses/CharacterInfo.dart';
 import 'package:proyecto_final/DataClasses/SpellsInfo.dart';
-import 'package:proyecto_final/Service/CharacterService.dart';
-import 'package:proyecto_final/Service/SpellsService%20copy.dart';
+import 'package:proyecto_final/Service/CharacterServiceBloc.dart';
+import 'package:proyecto_final/Service/SpellsServiceBloc.dart';
 void main() => runApp(const TabsScreen());
 
-List<String> characters = ["Dinosaurio", "Dragon"];
-List<String> spells = ["poder1", "poder2"];
+int tabPosition = 0;
 
 class TabsScreen extends StatelessWidget {
   const TabsScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    CharacterService characters = CharacterService(); //Clase que descarga los datos del JSON de los personajes
-    SpellsService spells = SpellsService(); //Clase que descarga los datos del JSON de los hechizos
+    CharacterServiceBloc characters = CharacterServiceBloc(); //Clase que descarga los datos del JSON de los personajes
+    SpellsServiceBloc spells = SpellsServiceBloc(); //Clase que descarga los datos del JSON de los hechizos
 
-    ScrollController listScrollController = ScrollController(); //Controlar el scroll del tab de personajes.
+    ScrollController CharacterScrollController = ScrollController(); //Controlar el scroll del tab de personajes.
+    ScrollController SpellsScrollController = ScrollController();
 
     return DefaultTabController(
       length: 2,
@@ -31,9 +31,17 @@ class TabsScreen extends StatelessWidget {
           children: [
         FloatingActionButton(
         onPressed: () {
-            if (listScrollController.hasClients) {
-              final position = listScrollController.position.minScrollExtent;
-              listScrollController.animateTo(
+            if (CharacterScrollController.hasClients && tabPosition == 0) {
+              final position = CharacterScrollController.position.minScrollExtent;
+              CharacterScrollController.animateTo(
+                position,
+                duration: Duration(seconds: 3),
+                curve: Curves.easeOut,
+              );
+            }
+            else if(SpellsScrollController.hasClients){
+              final position = SpellsScrollController.position.minScrollExtent;
+              SpellsScrollController.animateTo(
                 position,
                 duration: Duration(seconds: 3),
                 curve: Curves.easeOut,
@@ -47,9 +55,17 @@ class TabsScreen extends StatelessWidget {
         SizedBox(height: 10),
         FloatingActionButton(
         onPressed: () {
-            if (listScrollController.hasClients) {
-              final position = listScrollController.position.maxScrollExtent;
-              listScrollController.animateTo(
+            if (CharacterScrollController.hasClients && tabPosition == 0) {
+              final position = CharacterScrollController.position.maxScrollExtent;
+              CharacterScrollController.animateTo(
+                position,
+                duration: Duration(seconds: 3),
+                curve: Curves.easeOut,
+              );
+            }
+            else if(SpellsScrollController.hasClients){
+              final position = SpellsScrollController.position.maxScrollExtent;
+              SpellsScrollController.animateTo(
                 position,
                 duration: Duration(seconds: 3),
                 curve: Curves.easeOut,
@@ -63,7 +79,9 @@ class TabsScreen extends StatelessWidget {
         body: SafeArea(
           child: Column(
             children: [
-              const TabBar(labelColor: Colors.black, tabs: [
+              TabBar(onTap: (int) {
+                tabPosition = int;
+              },labelColor: Colors.black, tabs: [
                 Tab(
                   text: 'Personajasos',
                 ),
@@ -76,7 +94,7 @@ class TabsScreen extends StatelessWidget {
                 child: TabBarView(
                   // Here is Line 132.
                   children: [
-                    SingleChildScrollView(controller: listScrollController,scrollDirection: Axis.vertical,child: Container(
+                    SingleChildScrollView(controller: CharacterScrollController,scrollDirection: Axis.vertical,child: Container(
                         child: FutureBuilder<List<CharacterInfo>>(
                           future: characters.fetchCharacters(), 
                           builder: (context, snapshot) {
@@ -91,13 +109,16 @@ class TabsScreen extends StatelessWidget {
                                   backgroundImage: NetworkImage(item.image.toString()),
                                   ),
                                 trailing: Text(item.house.toString()),
+                                subtitle: Text(style: TextStyle(color: Colors.purple),"Gender: "+item.gender.toString()+"\n"+
+                                "Date of birth: "+item.dateOfBirth.toString()+"\n"+
+                                "Actor: "+item.actor.toString()),
                               ),
                             ),)).toList());
                           } else return CircularProgressIndicator();
                         },)),),
                     
                     
-                    SingleChildScrollView(scrollDirection: Axis.vertical,child: Container(
+                    SingleChildScrollView(controller: SpellsScrollController,scrollDirection: Axis.vertical,child: Container(
                         child: FutureBuilder<List<SpellsInfo>>(
                           future: spells.fetchCharacters(), 
                           builder: (context, snapshot) {

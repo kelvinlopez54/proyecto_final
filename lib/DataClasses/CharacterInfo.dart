@@ -2,17 +2,19 @@
 class CharacterInfo{
   String? name = "";
   String? house = "";
-  bool? isStudent = false;
+  String? gender = "";
+  String? dateOfBirth = "";
   String? actor = "";
   String? image = "";
 
-  CharacterInfo({this.name,this.house,this.isStudent,this.actor,this.image});
+  CharacterInfo({this.name,this.house,this.gender,this.dateOfBirth,this.actor, this.image});
 
   factory CharacterInfo.fromJson(Map<String, dynamic> json){
     return CharacterInfo(
       name: json["name"],
       house: json["house"],
-      isStudent: json["hogwartsStudent"],
+      gender: json["gender"],
+      dateOfBirth: json["dateOfBirth"],
       actor: json["actor"],
       image: json["image"].replaceAll("herokuapp", "onrender")
     );
